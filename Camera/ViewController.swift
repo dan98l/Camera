@@ -49,7 +49,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
             
             switch media {
             case .camera:
-                UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveError), nil)
+//                UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveError), nil)
+                UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
             default: break
             }
             picker.dismiss(animated: true, completion: nil)
@@ -62,8 +63,19 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
         picker.dismiss(animated: true, completion: nil)
     }
     
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+        } else {
+            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+        }
+    }
+    
     @objc func saveError() {
         print("saveError")
     }
 }
-
